@@ -5,11 +5,7 @@ use std::collections::HashMap;
 pub fn complements(numbers: &[u32], target: u32) -> Option<(u32, u32)> {
     // Could use a bitfield instead of a HM to save space, but still O(n)
     let mut visited: HashMap<u32, bool> = HashMap::new();
-    for &number in numbers.iter() {
-        if number > target {
-            continue;
-        }
-
+    for &number in numbers.iter().filter(|&n| *n <= target) {
         let diff = target - number;
         match visited.get(&diff) {
             None => { visited.insert(number, true); }
