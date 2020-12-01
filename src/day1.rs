@@ -3,6 +3,7 @@ use std::collections::HashMap;
 
 /// Complements finds two numbers in a list of numbers which sum to the target value
 pub fn complements(numbers: &[u32], target: u32) -> Option<(u32, u32)> {
+    // Could use a bitfield instead of a HM to save space, but still O(n)
     let mut visited: HashMap<u32, bool> = HashMap::new();
     for &number in numbers.iter() {
         if number > target {
@@ -18,6 +19,7 @@ pub fn complements(numbers: &[u32], target: u32) -> Option<(u32, u32)> {
     None
 }
 
+/// Three Complements finds three numbers that sum to the target value
 pub fn three_complements(numbers: &[u32], target: u32) -> Option<(u32, u32, u32)> {
     for &number in numbers.iter() {
         let diff = target - number;
