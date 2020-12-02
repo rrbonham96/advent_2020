@@ -17,7 +17,7 @@ fn get_bit(b: &BitField, pos: u32) -> bool {
 
 /// Complements finds two numbers in a list of numbers which sum to the target value
 pub fn complements(numbers: &[u32], target: u32) -> Option<(u32, u32)> {
-    let mut visited: BitField = vec![0u32; 2020 / 32 + 1];
+    let mut visited: BitField = vec![0u32; target as usize / 32 + 1];
     for &number in numbers.iter().filter(|&n| *n <= target) {
         let diff = target - number;
         if get_bit(&visited, diff) {
