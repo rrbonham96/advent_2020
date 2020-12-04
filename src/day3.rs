@@ -1,22 +1,30 @@
 //! Day 3
 
-pub fn tree_count(map: &Vec<Vec<char>>, right: usize, down: usize) -> u64 {
-    let mut tree_count = 0;
-    let width = map[0].len();
-    for (i, row) in map.iter().enumerate() {
-        if i % down == 0 {
-            if row[(right * i / down) % width] == '#' {
-                tree_count += 1;
-            }
-        }
-    }
-    tree_count
+pub fn multi_tree_count(map: &Vec<u32>, slopes: &Vec<(usize, usize)>) -> u64 {
+    slopes.iter()
+        .map(|(right, down)| fast_tree_count(map, *right, *down))
+        .product::<u64>()
 }
 
-pub fn multi_tree_count(map: &Vec<Vec<char>>, slopes: &Vec<(usize, usize)>) -> u64 {
-    slopes.iter()
-        .map(|(right, down)| tree_count(map, *right, *down))
-        .product::<u64>()
+pub fn fast_tree_count(map: &Vec<u32>, right: usize, down: usize) -> u64 {
+    map.iter()
+        .enumerate()
+        .step_by(down)
+        .skip(down)
+        .filter(|(i, b)| {
+            (*b & 1 << ((i * right / down) % 31)) != 0
+        })
+        .count() as u64
+}
+
+pub fn input_to_bitfields(input: &Vec<String>) -> Vec<u32> {
+    input.iter()
+        .map(|s| {
+            s.chars()
+            .enumerate()
+            .fold(0u32, |acc, (i, c)| acc | if c == '#' { 1u32 << i } else { 0u32 })
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -27,21 +35,15 @@ mod tests {
     #[test]
     fn solve_p1() {
         let input = util::read_lines("inputs/day3_input.txt");
-        let mut char_matrix = Vec::new();
-        for s in input {
-            char_matrix.push(s.chars().collect::<Vec<char>>());
-        }
-        let count = tree_count(&char_matrix, 3, 1);
+        let char_matrix = input_to_bitfields(&input);
+        let count = fast_tree_count(&char_matrix, 3, 1);
         println!("{}", count);
     }
 
     #[test]
     fn solve_p2() {
         let input = util::read_lines("inputs/day3_input.txt");
-        let mut char_matrix = Vec::new();
-        for s in input {
-            char_matrix.push(s.chars().collect::<Vec<char>>());
-        }
+        let char_matrix = input_to_bitfields(&input);
         let slopes: Vec<(usize, usize)> = vec![
             (1, 1),
             (3, 1),

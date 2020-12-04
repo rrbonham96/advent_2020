@@ -1,6 +1,5 @@
 //! Advent of Code utilities
 use std::fs;
-use std::io::{self, BufRead};
 
 pub fn load_file(filename: &str) -> String {
     fs::read_to_string(filename).unwrap()
